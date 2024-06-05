@@ -1,0 +1,49 @@
+// Go to "continue editing" on your quizizz quiz (https://quizizz.com/)
+// Open developer tools ctrl-i
+// Paste code
+// Copy output via right click, copy string contents
+// Insert into https://data.page/json/csv
+// Download xlsx
+// Copy into quizziz template (make sure to use option keep formatting upon pasting)
+// import into quizziz
+
+let questions = Array.from(document.getElementsByClassName("question-text-wrapper text-xs"))
+let answers = Array.from(document.getElementsByClassName("grid gap-1 qdc-inner-card-question-answer"));
+questions = questions.map((x)=>x.innerText)
+
+function process_answers(answer_set){
+	let i = 1;
+	let correct = [];
+	let answers = [];
+	for(let x of Array.from(answer_set)){
+		if(x.innerHTML.includes("text-ds-fail-500")) correct.push(i);
+		answers.push(x.innerText);
+		i++;
+	}
+	return [answers, correct]
+}
+
+answers = answers.map((x)=>x.children[1].children);
+answers = answers.map((x)=>process_answers(x));
+let correct = answers.map((x)=>x[1]);
+answers = answers.map((x)=>x[0]);
+
+let question_type = correct.map((x)=> x.length===1?"Multiple Choice": "Checkbox")
+let time = "30"
+let option1 = answers.map((x)=>x[0]?x[0]:"");
+let option2 = answers.map((x)=>x[1]?x[1]:"");
+let option3 = answers.map((x)=>x[2]?x[2]:"");
+let option4 = answers.map((x)=>x[3]?x[3]:"");
+let option5 = answers.map((x)=>x[4]?x[4]:"");
+
+
+let json = {	"Question Text" : questions,
+		"Question Type" : question_type,
+		"Option 1" : option1,
+		"Option 2" : option2,
+		"Option 3" : option3,
+		"Option 4" : option4,
+		"Option 5" : option5,
+		"Correct Answer" : correct.map((x)=> JSON.stringify(x).slice(1,-1))
+}
+json = JSON.stringify(json);
