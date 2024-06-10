@@ -16,7 +16,7 @@ function process_answers(answer_set){
 	let correct = [];
 	let answers = [];
 	for(let x of Array.from(answer_set)){
-		if(x.innerHTML.includes("text-ds-fail-500")) correct.push(i);
+		if(x.innerHTML.includes("text-ds-success-500")) correct.push(i);
 		answers.push(x.innerText);
 		i++;
 	}
